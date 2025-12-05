@@ -1,7 +1,7 @@
 // External dependency flaky tests - network, filesystem, etc.
 describe('External Dependency Tests', () => {
   test('test_network_call_flaky', async () => {
-    // Flaky: real network call without retry logic
+    // Fixed: Added retry logic to handle ECONNREFUSED
     const mockFetch = () => {
       if (Math.random() < 0.3) {
         return Promise.reject(new Error('ECONNREFUSED'));
@@ -9,7 +9,16 @@ describe('External Dependency Tests', () => {
       return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
     };
 
-    const response = await mockFetch();
+    let response;
+    for (let i = 0; i < 3; i++) {
+      try {
+        response = await mockFetch();
+        break;
+      } catch (error) {
+        if (i === 2) throw error;
+      }
+    }
+
     expect(response.ok).toBe(true);
   });
 
