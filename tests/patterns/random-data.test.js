@@ -9,12 +9,16 @@ describe('Random Data Tests', () => {
   });
 
   test('test_random_array_flaky', () => {
-    // Flaky: array order randomness
+    // Fix: Mock Math.random to control randomness
+    const originalMathRandom = Math.random;
+    Math.random = () => 0.1; // Ensures 'a' is always first
+
     const items = ['a', 'b', 'c', 'd', 'e'];
     const shuffled = items.sort(() => Math.random() - 0.5);
 
-    // Fails when shuffle produces different order
     expect(shuffled[0]).toBe('a');
+
+    Math.random = originalMathRandom; // Restore original Math.random
   });
 
   test('test_seeded_random_stable', () => {
