@@ -55,8 +55,9 @@ describe('Alias Import Tests', () => {
     const age = utils.calculateAge(1990);
     const isValid = authHelper.validateEmail('user@example.com');
 
-    // Flaky condition
-    if (Math.random() < 0.3) {
+        // Removed flaky condition
+    const randomValue = 0.5; // Fixed value to ensure deterministic behavior
+    if (randomValue < 0.3) {
       throw new Error('Random failure with alias imports');
     }
 
